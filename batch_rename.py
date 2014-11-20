@@ -16,29 +16,28 @@ def rename(idir, f_type, prompt, outname=None):
 	ifiles = [f for f in os.listdir(idir)]
 #	dont_touch =["tophat_report", "logs", "prep_reads", "junctions", "insertions", "deletions"]
 	if outname:
-		for ifile in ifiles:
+		for ifile in sorted(ifiles):
 			if ifile.endswith(f_type):
 				if prompt:
 					Join = raw_input('Would you like to move {} to {}.BED?\n'.format(ifile, outname)).lower()
 					if Join == "yes" or Join == "y":
-						subprocess.call(["mv", ifile, "{}.BED".format(outname)])
+						subprocess.call(["mv", idir+"/"+ifile, "{}/{}.BED".format(idir, outname)])
 					else:
 						print "I won't do anything!\n",
 				else:
-					subprocess.call(["mv", ifile, "{}.BED".format(outname)])
+					subprocess.call(["mv", idir+"/"+ifile, "{}/{}.BED".format(idir, outname)])
 	else:
 		name = os.path.basename(os.path.normpath(idir))
-		print name
-		for ifile in ifiles:
+		for ifile in sorted(ifiles):
 			if ifile.endswith(f_type):
 				if prompt:
 					Join = raw_input('Would you like to move {} to {}.BED?\n'.format(ifile, name)).lower()
 					if Join == "yes" or Join == "y":
-						subprocess.call(["mv", ifile, "{}.BED".format(outname)])
+						subprocess.call(["mv", idir+"/"+ifile, "{}/{}.BED".format(idir, name)])
 					else:
 						print "I won't do anything!\n",
 				else:
-					subprocess.call(["mv", ifile, "{}.BED".format(outname)])
+					subprocess.call(["mv", idir+"/"+ifile, "{}/{}.BED".format(idir, name)])
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Takes HTseq output and creates a fake gfold file.\n ')
