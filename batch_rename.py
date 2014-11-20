@@ -10,6 +10,7 @@
 
 import os, re, sys
 import argparse
+import subprocess
 
 def rename(idir, f_type, prompt, outname=None):
 	ifiles = [f for f in os.listdir(idir)]
