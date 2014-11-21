@@ -43,7 +43,7 @@ def normalise_to_housekeeper(count_file):
 	return housekeeper
 
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description="Processes RNA-seq samples to bigWig tracks.\nIf Tophat2 is specified, this will pull out the uniquely mapped reads\nOtherwiseit is assumed that the bam file is already uniquely mapped!")
+	parser = argparse.ArgumentParser(description="Processes RNA-seq samples to bigWig tracks")
 	parser.add_argument('-i', '--input', help='BED file in UCSC format', required=True)
 	parser.add_argument('-g', '--genome', help='Genome the samples are aligned to, options include mm10/mm9/hg19', required=True)
 	parser.add_argument('-a', '--house', help='Housekeeper normalisation. Input file is HTSEQ-count file containing gene for normalisation on first line', required=False)
