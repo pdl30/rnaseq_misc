@@ -10,6 +10,7 @@
 
 import os, re, sys
 import argparse
+import rnaseq_misc
 
 def htseq_to_gfold(ilist, gfold_file):
 	gfold_data = {}
@@ -67,10 +68,17 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Takes HTseq output and creates a fake gfold file.\n ')
 	parser.add_argument('-i', '--input', help='Input directory containing files with .count ending', required=False)
 	parser.add_argument('-m', '--matrix', help='Alternatively use input matrix. Will output _htgold.tsv files', required=False)
-	parser.add_argument('-e', '--ex', help='Example gfold count file processed using same GTF', required=True)
+	parser.add_argument('-e', '--ex', help='Example gfold count file processed using same GTF, otherwise will use packages example which is ENS 74 formatted', required=False)
 	args = vars(parser.parse_args())
+	path = os.path.dirname(rnaseq_misc.__file__)
+
+	if args["ex"]:
+		gfold_count = args["ex"]
+	else:
+		gfold_count = path + "/data/example_mm10_ens74_gfold_counts.txt"
+		
 	if args["input"]:
 		ifiles = [f for f in os.listdir(args["input"]) if f.endswith(".count")]
-		htseq_to_gfold(ifiles, args["ex"])
+		htseq_to_gfold(ifiles, gfold_count)
 	elif args["matrix"]:
-		table_to_gfold(args["matrix"], args["ex"])
+		table_to_gfold(args["matrix"], gfold_count)
