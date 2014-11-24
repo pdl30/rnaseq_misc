@@ -59,7 +59,7 @@ def table_to_gfold(ifile, gfold_file):
 				for i in range(1, len(word)):
 					data[head[i]][word[0]] = word[i]
 	for key in sorted(data):
-		output = open("{}_htgold.tsv".format(key), "w")
+		output = open("{}_htgold.count".format(key), "w")
 		for gene in sorted(data[key]):
 			output.write("{}\t{}\t{}\t{}\t{}\n".format(gene, gfold_data[gene][0], data[key][gene], gfold_data[gene][1], 10)),
 		output.close()
