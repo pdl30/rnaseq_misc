@@ -69,6 +69,9 @@ if __name__ == "__main__":
 	parser.add_argument('-i', '--input', help='Input directory containing files with .count ending', required=False)
 	parser.add_argument('-m', '--matrix', help='Alternatively use input matrix. Will output _htgold.tsv files', required=False)
 	parser.add_argument('-e', '--ex', help='Example gfold count file processed using same GTF, otherwise will use packages example which is ENS 74 formatted', required=False)
+	if len(sys.argv)==1:
+		parser.print_help()
+		sys.exit(1)
 	args = vars(parser.parse_args())
 	path = os.path.dirname(rnaseq_misc.__file__)
 
