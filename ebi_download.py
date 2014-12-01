@@ -55,7 +55,7 @@ def download_ebi(accession):
 	#Protocol REF	Protocol REF	Protocol REF	Protocol REF	Extract Name	Material Type	
 	#Comment[LIBRARY_LAYOUT]	Comment[LIBRARY_SOURCE]	Comment[LIBRARY_STRATEGY]
 	command = "wget -b -o tmp.txt http://www.ebi.ac.uk/arrayexpress/files/{0}/{0}.sdrf.txt".format(accession)
-	
+	subprocess.call(command, shell=True)
 	f = open("tmp.txt", "r")
 	lines = f.readlines()
 	header = lines[0].rstrip()
