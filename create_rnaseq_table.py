@@ -17,7 +17,7 @@ def read_dir(idir):
 	for ifile in ifiles:
 		name = re.sub("_deseq2_analysis.tsv", "", ifile)
 		data[name] = {}
-		with open(ifile) as f:
+		with open(idir + '/' + ifile) as f:
 			next(f)
 			for line in f:
 				line = line.rstrip()
@@ -31,7 +31,7 @@ def read_gfold_dir(idir):
 	for ifile in ifiles:
 		name = re.sub(".diff", "", ifile)
 		data[name] = {}
-		with open(ifile) as f:
+		with open(idir + '/'+ifile) as f:
 			for i in range(0,10):
 				next(f)
 			for line in f:
