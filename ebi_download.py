@@ -54,7 +54,7 @@ def download_ebi(accession):
 	#Characteristics[cell line]	Characteristics[strain]	Characteristics[cell type]	
 	#Protocol REF	Protocol REF	Protocol REF	Protocol REF	Extract Name	Material Type	
 	#Comment[LIBRARY_LAYOUT]	Comment[LIBRARY_SOURCE]	Comment[LIBRARY_STRATEGY]
-	command = "wget -b -o tmp.txt http://www.ebi.ac.uk/arrayexpress/files/{0}/{0}.sdrf.txt".format(accession)
+	command = "wget -c -nv -q -O tmp.txt http://www.ebi.ac.uk/arrayexpress/files/{0}/{0}.sdrf.txt".format(accession)
 	subprocess.call(command, shell=True)
 	f = open("tmp.txt", "r")
 	lines = f.readlines()
@@ -70,7 +70,11 @@ def download_ebi(accession):
 		if not os.path.isdir(word[names[0]]):
 			os.mkdir(word[names[0]])
 		os.chdir(word[names[0]])
-		command = "wget -c -nv -q {}".format(word[links[0]])
+		link = word[links[0]]
+		fastq = os.path.basename(link)
+		command = "wget -c -nv -q {0}".format(link)
+		subprocess.call(command.split())
+		command2 = "gunzip {}".format(fastq)
 		subprocess.call(command, shell=True)
 		os.chdir(old_path)
 
