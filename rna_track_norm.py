@@ -18,11 +18,15 @@ import pkg_resources
 import pychiptools
 
 ##Must include scaling!
-def genomeCoverage(name, house):
+def genomeCoverage(name, house=None, deseq=None):
 	print "==> Converting bed to bedGraph...\n"
 	inbed = pybedtools.BedTool(name+"_ucsc.BED")
-	outcov = inbed.genome_coverage(bg=True, genome='mm10', scale=house)
-	output = name+"_house.bedGraph"
+	if house:
+		outcov = inbed.genome_coverage(bg=True, genome='mm10', scale=house)
+		output = name+"_house.bedGraph"
+	elif deseq:
+		outcov = inbed.genome_coverage(bg=True, genome='mm10', scale=deseq)
+		output = name+"_deseq2.bedGraph"
 	outcov.saveas(output)
 	return output
 
@@ -47,6 +51,7 @@ if __name__ == "__main__":
 	parser.add_argument('-i', '--input', help='BED file in UCSC format', required=True)
 	parser.add_argument('-g', '--genome', help='Genome the samples are aligned to, options include mm10/mm9/hg19', required=True)
 	parser.add_argument('-a', '--house', help='Housekeeper normalisation. Input file is HTSEQ-count file containing gene for normalisation on first line', required=False)
+	parser.add_argument('-d', '--deseq2', help='DESEQ2 sizeFactor normalisation')	
 	if len(sys.argv)==1:
 		parser.print_help()
 		sys.exit(1)
@@ -57,9 +62,12 @@ if __name__ == "__main__":
 		raise Exception("Unsupported Genome!")
 	
 	name = re.sub("_ucsc.BED$", "", args["input"])
-
-	house = normalise_to_housekeeper(args["house"])
-	scale = float(1000)/int(house) #Works and checked
-	bedgraph = genomeCoverage(name, house=scale)
-
+	name = re.sub(".BED$", "", args["input"])
+	if args["house"]:
+		house = normalise_to_housekeeper(args["house"])
+		scale = float(1000)/int(house) #Works and checked
+		bedgraph = genomeCoverage(name, house=scale)
+	elif args["deseq2"]:
+		sizeF = 1/float(args["deseq2"])
+		bedgraph = genomeCoverage(name, deseq=sizeF)
 	bedgraphtobigwig(bedgraph, chrom)
