@@ -16,7 +16,6 @@ import pysam
 
 def convert_bam_bed(name, paired):
 	count = 0
-
 	filtered_bam = pysam.view( "-bq 50", name+".bam") ##Filters for uniquely aligned reads!
 	for read in filtered_bam:
 		count += 1 
