@@ -74,7 +74,7 @@ def download_ebi(accession):
 		fastq = os.path.basename(link)
 		command = "wget -c -nv -q {0}".format(link)
 		subprocess.call(command.split())
-		command2 = "gunzip {}".format(fastq)
+		command2 = "gunzip {0}".format(fastq)
 		subprocess.call(command, shell=True)
 		os.chdir(old_path)
 

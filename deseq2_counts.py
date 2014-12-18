@@ -55,9 +55,9 @@ def run_rcode(rscript, name):
 
 
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description='Differential expression for RNA-seq experiments. Runs DESEQ2 by default\n')
-	parser.add_argument('-c','--config', help='Config file containing parameters, please see documentation for usage!', required=False)
-	parser.add_argument('-i','--input', help='Combined counts file',required=True)
+	parser = argparse.ArgumentParser(description='Prints DESEQ2 normalised counts and also size factors\n')
+	parser.add_argument('-c','--config', help='Config file containing [Conditions], please see documentation for usage!', required=False)
+	parser.add_argument('-i','--input', help='Counts matrix',required=True)
 	if len(sys.argv)==1:
 		parser.print_help()
 		sys.exit(1)
