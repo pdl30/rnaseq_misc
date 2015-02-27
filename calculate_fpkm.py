@@ -59,7 +59,7 @@ def calculate_fpkm(gtf_info, count_file, library_size, output_file):
 	for c in counts:
 		fp = (1000000000 * counts[c])
 		km = (library_size * gtf_info[c])
-		print fp, km
+		#print fp, km
 		fpkm = float(fp)/float(km)
 		output.write("{}\t{}\n".format(c, fpkm)),
 
