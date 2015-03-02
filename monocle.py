@@ -23,22 +23,34 @@ def create_design_for_R(conditions):
 		output.write("{}\t{}\n".format(key, conditions[key]))
 	output.close()
 
-def monocle(conditions):
+#Not finished, just a rough outline of the method
+def monocle(conditions, cond1, cond2):
 	rscript = "suppressPackageStartupMessages(library('Biobase'))\n"
 	rscript += "suppressPackageStartupMessages(library('knitr'))\n"
 	rscript += "suppressPackageStartupMessages(library('reshape2'))\n"
 	rscript += "suppressPackageStartupMessages(library('ggplot2'))\n"
 	rscript += "suppressPackageStartupMessages(library('monocle'))\n"
 	rscript += "pdata <- read.table('tmp_design.txt', header=T)\n"
+	rscript =  "suppressPackageStartupMessages(library(DESeq2))\n"
+
+	rscript += "counts <- read.table('{}', sep='\\t', header=T, row.names=1)\n".format(counts_file)
+	rscript += "rnaseq_dds <- DESeqDataSetFromMatrix(countData = counts, colData = data.frame(pdata), design = ~ condition)\n"
+	rscript += "rnaseq_dds$condition <- factor(rnaseq_dds$condition, levels=unique(pdata[,3]))\n"
+	rscript += "rnaseq_dds <- DESeq(rnaseq_dds)\n"
+	rscript += "factors <- sizeFactors(rnaseq_dds)\n"
+	rscript += "names(factors) <- rnaseq_dds$condition\n"
+	rscript += "co <- counts(rnaseq_dds, normalized=TRUE)\n"
+	rscript += "colnames(co) <- colnames(counts)\n"
+	rscript += "rnaseq_res <- results(rnaseq_dds, contrast=c('condition','{0}','{1}'))\n".format(cond1, cond2)
+	rscript += "rnaseq_sig <- rnaseq_res[which(rnaseq_res$padj <= 0.1),]\n"
+
 	rscript += "pd <- new('AnnotatedDataFrame', data = pdata)\n"
-	#Need to run DESEQ2 first to get normalised counts and differentially expressed genes for each of the conditions found in the sets
-	rscript += "x <- read.table('total_normalised_matrix.tsv')\n"
-	rscript += "HSMM <- newCellDataSet(as.matrix(t(wt)), phenoData = wtpd)\n"
+	rscript += "HSMM <- newCellDataSet(as.matrix(t(co)), phenoData = pd)\n"
 	rscript += "HSMM <- detectGenes(HSMM, min_expr = 0.1)\n"
 	rscript += "expressed_genes <- row.names(subset(fData(HSMM), num_cells_expressed >= 50))\n"
 	rscript += "L <- log(exprs(HSMM[expressed_genes,]))\n"
 	rscript += "melted_dens_df <- melt(t(scale(t(L))))\n"
-	rscript += "pdf("monocle_report.pdf")\n"
+	rscript += "pdf('monocle_report.pdf')\n"
 	rscript += "qplot(value, geom='density', data=melted_dens_df) + stat_function(fun = dnorm, size=0.5, color='red') + xlab('Standardized log(TPM)') + ylab('Density')\n"
 
 

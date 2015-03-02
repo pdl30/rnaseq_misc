@@ -53,6 +53,21 @@ def run_rcode(rscript, name):
 		traceback.extract_tb( sys.exc_info()[2] )[-1][1] ) )
 		sys.exit(1)
 
+def print_norm_counts(counts_file):
+	rscript =  "library(DESeq2)\n"
+	rscript += "pdata <- read.table('tmp_design.txt', header=T)\n"
+	#Make sure they match!
+	rscript += "counts <- read.table('{}', sep='\\t', header=T, row.names=1)\n".format(counts_file)
+	rscript += "rnaseq_dds <- DESeqDataSetFromMatrix(countData = counts, colData = data.frame(pdata), design = ~ condition)\n"
+	rscript += "rnaseq_dds$condition <- factor(rnaseq_dds$condition, levels=unique(pdata[,3]))\n"
+	rscript += "rnaseq_dds <- DESeq(rnaseq_dds)\n"
+	rscript += "factors <- sizeFactors(rnaseq_dds)\n"
+	rscript += "names(factors) <- rnaseq_dds$condition\n"
+	rscript += "co <- counts(rnaseq_dds, normalized=TRUE)\n"
+	rscript += "colnames(co) <- colnames(counts)\n"
+	rscript += "write.table(factors, file='size_factors.tsv', sep='\\t', quote=F, row.names=F)\n"
+	rscript += "write.table(co, file='normalised_counts.tsv', sep='\\t', quote=F)\n"
+	return rscript
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Prints DESEQ2 normalised counts and also size factors\n')
@@ -71,5 +86,5 @@ if __name__ == "__main__":
 	create_design_for_R(conditions)
 	
 	create_design_for_R(conditions)
-	rscript = deseq2.print_norm_counts(args["input"])
+	rscript = print_norm_counts(args["input"])
 	run_rcode(rscript, "get_counts.R")
