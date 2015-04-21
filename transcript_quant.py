@@ -30,7 +30,7 @@ def quant(fq1, threads, outdir, lib, fq2=None):
 	if fq2:
 		command2 = "salmon quant -p {} -i {} -l {} -1 {} -2 {} -o {}".format(threads, index, lib, fq1, fq2, outdir)
 	else:
-		command2 = "salmon quant -p {} -i {} -l U -r {} -o {}".format(threads, index, fq1, outdir)
+		command2 = "salmon quant -p {} -i {} -l SR -r {} -o {}".format(threads, index, fq1, outdir)
 	subprocess.call(command2.split())
 
 def combine_quant(conditions, outfile):
